@@ -310,4 +310,33 @@ export class UsersService extends PaginationService<UserEntity> {
   async getSkills(team_id: number): Promise<SkillEntity[]> {
     return await this.skillRepository.find({ where: { team_id } });
   }
+
+  async markLessonAsRead(userId: number, courseId: number, lessonId: number) {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+
+    if (!user) {
+      throw new BadRequestException(en.userNotFound);
+    }
+
+    let course_progress = user.user_progress.find(
+      (progress) => progress.courseId === courseId,
+    );
+
+    if (!course_progress) {
+      course_progress = { courseId, lesson_completed: [], percentage: 0 };
+      user.user_progress.push(course_progress);
+    }
+
+    const isLessonCompleted = course_progress.lesson_completed.find(
+      (lesson) => lesson.id === lessonId,
+    );
+
+    if (!isLessonCompleted) {
+      course_progress.lesson_completed.push({
+        id: lessonId,
+        completed_date: new Date(),
+      });
+    }
+    await this.userRepository.save(user);
+  }
 }

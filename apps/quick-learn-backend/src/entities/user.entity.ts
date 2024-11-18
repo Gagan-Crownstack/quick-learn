@@ -129,4 +129,15 @@ export class UserEntity extends BaseEntity {
 
   @OneToMany(() => CourseEntity, (course) => course.updated_by)
   updated_courses: CourseEntity[];
+
+  //Array of completed lesson
+  @Column('json', { default: [] })
+  user_progress: Array<{
+    courseId: number;
+    lesson_completed: Array<{
+      id: number;
+      completed_date: Date;
+    }>;
+    percentage: number;
+  }>;
 }

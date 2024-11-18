@@ -246,6 +246,35 @@ export class UsersController {
     return new SuccessResponse(en.successUserUpdated);
   }
 
+  @Post('mark-read/:userId/:courseId/:lessonId')
+  @ApiOperation({ summary: 'Mark a lesson as read' })
+  @ApiParam({
+    name: 'userId',
+    required: true,
+    description: 'ID of the user marking the lesson as read',
+    type: Number,
+  })
+  @ApiParam({
+    name: 'courseId',
+    required: true,
+    description: 'ID of the course the lesson belongs to',
+    type: Number,
+  })
+  @ApiParam({
+    name: 'lessonId',
+    required: true,
+    description: 'ID of the lesson to be marked as read',
+    type: Number,
+  })
+  async markLessonAsRead(
+    @Param('userId') userId: number,
+    @Param('courseId') courseId: number,
+    @Param('lessonId') lessonId: number,
+  ): Promise<{ message: string }> {
+    await this.usersService.markLessonAsRead(userId, courseId, lessonId);
+    return { message: 'Lesson marked as read successfully' };
+  }
+
   @Delete(':uuid')
   @ApiOperation({ summary: 'Permanently delete user by uuid' })
   @ApiParam({
