@@ -16,7 +16,10 @@ import {
 import ContentRepositorySkeleton from './ContentRepositorySkeleton';
 import EmptyState from '@src/shared/components/EmptyStatePlaceholder';
 import { useAppDispatch, useAppSelector } from '@src/store/hooks';
-import { fetchMetadata } from '@src/store/features/metadataSlice';
+import {
+  fetchMetadata,
+  selectIsMetadataInitialized,
+} from '@src/store/features/metadataSlice';
 import {
   addRoadmap,
   fetchRoadmaps,
@@ -25,6 +28,7 @@ import {
   selectIsRoadmapsInitialized,
   selectRoadmapsStatus,
 } from '@src/store/features/roadmapsSlice';
+import { store } from '@src/store/store';
 
 const ContentRepository = () => {
   const router = useRouter();
@@ -33,6 +37,7 @@ const ContentRepository = () => {
   const courses = useAppSelector(selectAllCourses);
   const roadmapsStatus = useAppSelector(selectRoadmapsStatus);
   const isRoadmapsInitialized = useAppSelector(selectIsRoadmapsInitialized);
+  const isMetaDataInitialized = useAppSelector(selectIsMetadataInitialized);
 
   const [openAddModal, setOpenAddModal] = useState(false);
   const [isModalLoading, setIsModalLoading] = useState(false);
@@ -41,21 +46,20 @@ const ContentRepository = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        // Fetch the roadmaps and metadata concurrently
-        await Promise.all([
-          dispatch(fetchRoadmaps()),
-          dispatch(fetchMetadata()),
-        ]);
-      } catch (err) {
-        // Log the error to the console for debugging
-        console.error('Error fetching roadmaps and metadata:', err);
+      if (!isRoadmapsInitialized || !isMetaDataInitialized) {
+        try {
+          await Promise.all([
+            dispatch(fetchRoadmaps()),
+            dispatch(fetchMetadata()),
+          ]);
+        } catch (err) {
+          console.error('Error fetching roadmaps or metadata:', err);
+        }
       }
     };
 
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch]);
+  }, [dispatch, isRoadmapsInitialized, isMetaDataInitialized]);
 
   function onSubmit(data: AddEditRoadmapData) {
     setIsModalLoading(true);
@@ -107,7 +111,7 @@ const ContentRepository = () => {
           {roadmaps.length > 0 ? (
             <div
               style={{ scrollbarWidth: 'thin' }}
-              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-4  pr-2"
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-4 max-h-[60vh] overflow-y-auto pr-2"
             >
               <CreateNewCard
                 title={en.contentRepository.createNewRoadmap}
@@ -155,7 +159,7 @@ const ContentRepository = () => {
           {courses.length > 0 ? (
             <div
               style={{ scrollbarWidth: 'thin' }}
-              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-4 pr-2"
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-4 max-h-[60vh] overflow-y-auto pr-2"
             >
               {courses.map((item) => (
                 <Card
