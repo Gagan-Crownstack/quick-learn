@@ -16,7 +16,6 @@ import { en } from '@src/constants/lang/en';
 import { RouteEnum } from '@src/constants/route.enum';
 import AutoResizingTextarea from '@src/shared/components/AutoResizingTextArea';
 import Breadcrumb from '@src/shared/components/Breadcrumb';
-import Editor from '@src/shared/components/Editor';
 import { FullPageLoader } from '@src/shared/components/UIElements';
 import ConformationModal from '@src/shared/modals/conformationModal';
 import { TBreadcrumb } from '@src/shared/types/breadcrumbType';
@@ -42,6 +41,7 @@ import {
 } from '@src/store/features/roadmapsSlice';
 import { selectUser } from '@src/store/features/userSlice';
 import { useAppSelector } from '@src/store/hooks';
+import QuillEditor from '@src/shared/components/QuillEditor';
 
 // Move constants outside component to prevent recreating on each render
 const defaultlinks: TBreadcrumb[] = [
@@ -363,11 +363,11 @@ function Lesson() {
             control={form.control}
             render={({ field, fieldState: { error } }) => (
               <>
-                <Editor
+                <QuillEditor
                   isEditing={isEditing}
                   setIsEditing={setIsEditing}
                   value={field.value}
-                  setValue={(e) => onChange(field.name, e)}
+                  setValue={(value) => onChange(field.name, value)}
                   isUpdating={isUpdating}
                   isAdd={lessonId === 'add'}
                 />

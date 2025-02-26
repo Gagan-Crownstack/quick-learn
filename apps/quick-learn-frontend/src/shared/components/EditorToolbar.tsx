@@ -1,3 +1,4 @@
+'use client';
 import { PencilIcon } from '@heroicons/react/20/solid';
 import { ArrowPathIcon, CheckIcon, EyeIcon } from '@heroicons/react/24/outline';
 import React, { FC } from 'react';
@@ -9,7 +10,6 @@ export const formats = [
   'italic',
   'blockquote',
   'list',
-  'bullet',
   'link',
   'image',
   'code-block',
@@ -73,6 +73,7 @@ const EditorToolbar: FC<Props> = ({
           (isEditing ? 'flex ' : 'hidden ') +
           (!isAdd ? 'border-r-2 border-r-white ' : ' ')
         }
+        id="toolbar"
       >
         <span className="ql-formats" style={{ margin: '0px' }}>
           <select className="ql-header" defaultValue="3">
@@ -81,7 +82,7 @@ const EditorToolbar: FC<Props> = ({
             <option value="3">{en.component.normal}</option>
           </select>
         </span>
-        <span className="ql-formats" style={{ margin: '0px' }}>
+        <span>
           <button type="button" className="ql-bold" />
           <button type="button" className="ql-italic" />
           <button type="button" className="ql-blockquote" />

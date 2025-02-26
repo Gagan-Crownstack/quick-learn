@@ -85,7 +85,7 @@ input:-webkit-autofill:active {
   border: 1px red solid !important;
 }
 
-.quill .ql-container .ql-editor {
+.ql-container .ql-editor {
   min-height: 100vh;
 }
 
@@ -196,6 +196,9 @@ input:-webkit-autofill:active {
 /* lesson viewer css */
 .scrollbar-hide::-webkit-scrollbar {
   display: none; /* Chrome, Safari */
+}
+.ql-tooltip {
+  display: none !important;
 }
 
 @media screen and (max-width: 640px) {
